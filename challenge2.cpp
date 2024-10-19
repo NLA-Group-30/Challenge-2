@@ -7,6 +7,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#include <unsupported/Eigen/SparseExtra>
+
 int main(int argc, char* argv[]) {
 	if (argc < 2) {
 		std::cerr << "Usage: " << argv[0] << " <image_path>" << std::endl;
@@ -57,6 +59,24 @@ int main(int argc, char* argv[]) {
     std::cout << "I due valori singolari più grandi sono: "
               << singularValues(singularValues.size() - 1) << " e "
               << singularValues(singularValues.size() - 2) << std::endl;
+
+    // Task 3: Export matrix ATA in the matrix market format and move it to the lis-2.1.6/test
+    // folder. Using the proper iterative solver available in the LIS library compute the largest
+    // eigenvalue of ATA up to a tolerance of 10−8. Report the computed eigenvalue. Is the result
+    // in agreement with the one obtained in the previous point?
+
+	Eigen::saveMarket(ATA, "ATA.mtx");	
+
+	// ho eseguito mpicc -DUSE_MPI -I${mkLisInc} -L${mkLisLib} -llis etest1.c -o eigen1
+    // mpirun -n 4 ./eigen1 ATA.mtx eigvec.txt hist.txt -e pi -emaxiter 100 -etol 1.e-8	   
+	// eigenvalue: 1.045818e+09 
+
+
+	// Task 4: Find a shift µ ∈ R yielding an acceleration of the previous eigensolver. Report µ and the
+   //number of iterations required to achieve a tolerance of 10−8.
+
+   // con uno shift di 0.5 -> mpirun -n 4 ./eigen1 ATA.mtx eigvec.txt hist.txt -e pi -shift 0.5 -etol 1.e-8
+   // ottengo elapsed time         = 2.812570e-04 sec. (vs elapsed time         = 4.330410e-04 sec. senza specificare shift)
 
 	
  return 0;
