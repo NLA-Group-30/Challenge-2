@@ -1,7 +1,20 @@
+# Build directories
 build
 bin
+
+# IDEs directories
 .idea
 .vscode
+
+# Executables/binaries
 *.exe
 *.x
 *.o
+
+# Temporary matrices
+*.mtx
+*.txt
+
+# LIS library
+lis-2.1.6.zip
+lis-2.1.6
