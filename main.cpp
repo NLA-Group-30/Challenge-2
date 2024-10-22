@@ -221,5 +221,14 @@ int main(int argc, char* argv[]) {
 	std::cout << "  C size: " << C10.rows() << " x " << C10.cols() << std::endl;
 	std::cout << "  D size: " << D10.rows() << " x " << D10.cols() << std::endl;
 
+	// Task 12: Compute the compressed images as the matrix product C * D^T (again for k = 5 and k = 10). Export and
+	// upload the resulting images in .png.
+	std::cout << std::endl;
+	std::cout << " ### Task 12 ### " << std::endl;
+	Eigen::MatrixXd CDT5 = C5 * (D5.transpose());
+	save_image(CDT5, "CDT5.png");
+	Eigen::MatrixXd CDT10 = C10 * (D10.transpose());
+	save_image(CDT10, "CDT10.png");
+
 	return 0;
 }
