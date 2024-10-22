@@ -190,8 +190,36 @@ int main(int argc, char* argv[]) {
 	std::cout << std::endl;
 	std::cout << " ### Task 10 ### " << std::endl;
 	Eigen::BDCSVD<Eigen::MatrixXd> svd_noisy(noisy, Eigen::ComputeFullU | Eigen::ComputeFullV);
-	std::cout << "The two largest singular values are: " << svd_noisy.singularValues()[0] << " and "
-			  << svd_noisy.singularValues()[1] << std::endl;
+	Eigen::VectorXd noisy_singularValues = svd_noisy.singularValues();
+	Eigen::MatrixXd noisy_sigma = noisy_singularValues.asDiagonal();
+	std::cout << "The two largest singular values are: " << noisy_singularValues[0] << " and "
+			  << noisy_singularValues[1] << std::endl;
+
+	// Task 11: Starting from the previously computed SVD, create the matrices C and D defined in (1) assuming k = 5 and
+	// k = 10. Report the size of the matrices C and D.
+	std::cout << std::endl;
+	std::cout << " ### Task 11 ### " << std::endl;
+	Eigen::MatrixXd U_noisy = svd_noisy.matrixU();
+	Eigen::MatrixXd V_noisy = svd_noisy.matrixV();
+	Eigen::MatrixXd C5(U_noisy.rows(), 5);
+	Eigen::MatrixXd D5(noisy_sigma.rows(), 5);
+	Eigen::MatrixXd C10(U_noisy.rows(), 10);
+	Eigen::MatrixXd D10(noisy_sigma.rows(), 10);
+	std::cout << "k = 5" << std::endl;
+	for (int k = 0; k < 5; k++) {
+		C5.col(k) = U_noisy.col(k);
+		D5.col(k) = noisy_singularValues(k) * V_noisy.col(k);
+	}
+	std::cout << "  C size: " << C5.rows() << " x " << C5.cols() << std::endl;
+	std::cout << "  D size: " << D5.rows() << " x " << D5.cols() << std::endl;
+
+	std::cout << "k = 10" << std::endl;
+	for (int k = 0; k < 10; k++) {
+		C10.col(k) = U_noisy.col(k);
+		D10.col(k) = noisy_singularValues(k) * V_noisy.col(k);
+	}
+	std::cout << "  C size: " << C10.rows() << " x " << C10.cols() << std::endl;
+	std::cout << "  D size: " << D10.rows() << " x " << D10.cols() << std::endl;
 
 	return 0;
 }
