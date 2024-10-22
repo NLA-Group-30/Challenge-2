@@ -185,5 +185,13 @@ int main(int argc, char* argv[]) {
 	}
 	save_image(noisy, "noisy.png");
 
+	// Task 10: Using the SVD module of the Eigen library, perform a singular value decomposition of the matrix
+	// corresponding to the noisy image. Report the two largest computed singular values.
+	std::cout << std::endl;
+	std::cout << " ### Task 10 ### " << std::endl;
+	Eigen::BDCSVD<Eigen::MatrixXd> svd_noisy(noisy, Eigen::ComputeFullU | Eigen::ComputeFullV);
+	std::cout << "The two largest singular values are: " << svd_noisy.singularValues()[0] << " and "
+			  << svd_noisy.singularValues()[1] << std::endl;
+
 	return 0;
 }
