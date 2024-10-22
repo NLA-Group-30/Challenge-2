@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <Eigen/Eigenvalues>
@@ -102,8 +103,35 @@ int main(int argc, char* argv[]) {
 	std::cout << " ### Task 5 ### " << std::endl;
 
 	Eigen::BDCSVD<Eigen::MatrixXd> svd(A, Eigen::ComputeFullU | Eigen::ComputeFullV);
-	Eigen::MatrixXd sigma = svd.singularValues().asDiagonal();
-	std::cout << "Norm of sigma matrix: " << sigma.norm() << std::endl;
+	Eigen::VectorXd sigmaVector = svd.singularValues();
+	Eigen::MatrixXd sigmaM = singularValues.asDiagonal();
+	std::cout << "Norm of sigma matrix: " << sigmaM.norm() << std::endl;
+
+	// Task 6: Compute the matrices C and D described in (1) assuming k = 40 and k = 80. Report the number of nonzero
+	// entries in the matrices C and D.
+	std::cout << std::endl;
+	std::cout << " ### Task 6 ### " << std::endl;
+	Eigen::MatrixXd U = svd.matrixU();
+	Eigen::MatrixXd V = svd.matrixV().transpose();
+	Eigen::MatrixXd C40(U.rows(), 40);
+	Eigen::MatrixXd D40(sigmaM.rows(), 40);
+	Eigen::MatrixXd C80(U.rows(), 80);
+	Eigen::MatrixXd D80(sigmaM.rows(), 80);
+	std::cout << "k = 40" << std::endl;
+	for (int k = 0; k < 40; k++) {
+		C40.col(k) = U.col(k);
+		D40.col(k) = sigmaVector(k) * V.col(k);
+	}
+	std::cout << "  non-zero entries in C: " << C40.count() << std::endl;
+	std::cout << "  non-zero entries in D: " << D40.count() << std::endl;
+
+	std::cout << "k = 80" << std::endl;
+	for (int k = 0; k < 80; k++) {
+		C80.col(k) = U.col(k);
+		D80.col(k) = sigmaVector(k) * V.col(k);
+	}
+	std::cout << "  non-zero entries in C: " << C80.count() << std::endl;
+	std::cout << "  non-zero entries in D: " << D80.count() << std::endl;
 
 	return 0;
 }
