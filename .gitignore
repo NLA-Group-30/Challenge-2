@@ -18,3 +18,9 @@ bin
 # LIS library
 lis-2.1.6.zip
 lis-2.1.6
+
+# Images
+*.png
+*.jpg
+*.jpeg
+!Einstein.jpg

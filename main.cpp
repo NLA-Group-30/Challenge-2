@@ -14,6 +14,19 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+void save_image(const Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>& m,
+				const std::string& file_name) {
+	// convert original image in one made of bytes instead of doubles
+	Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> tmp(m.rows(), m.cols());
+	tmp = m.unaryExpr([](const double val) -> unsigned char { return static_cast<unsigned char>(val); });
+	// Save the image
+	if (stbi_write_png(file_name.c_str(), tmp.cols(), tmp.rows(), 1, tmp.data(), tmp.cols()) == 0) {
+		std::cerr << " \u001b[31mERROR\u001b[0m: Could not save image to " << file_name << std::endl;
+		return;
+	}
+	std::cout << "Image saved to " << file_name << std::endl;
+}
+
 int main(int argc, char* argv[]) {
 	if (argc < 2) {
 		std::cerr << "Usage: " << argv[0] << " <image_path>" << std::endl;
@@ -112,7 +125,7 @@ int main(int argc, char* argv[]) {
 	std::cout << std::endl;
 	std::cout << " ### Task 6 ### " << std::endl;
 	Eigen::MatrixXd U = svd.matrixU();
-	Eigen::MatrixXd V = svd.matrixV().transpose();
+	Eigen::MatrixXd V = svd.matrixV();
 	Eigen::MatrixXd C40(U.rows(), 40);
 	Eigen::MatrixXd D40(sigmaM.rows(), 40);
 	Eigen::MatrixXd C80(U.rows(), 80);
@@ -132,6 +145,15 @@ int main(int argc, char* argv[]) {
 	}
 	std::cout << "  non-zero entries in C: " << C80.count() << std::endl;
 	std::cout << "  non-zero entries in D: " << D80.count() << std::endl;
+
+	// Task 7: Compute the compressed images as the matrix product C * D^T (again for k = 40 and k = 80). Export and
+	// upload the resulting images in .png.
+	std::cout << std::endl;
+	std::cout << " ### Task 7 ### " << std::endl;
+	Eigen::MatrixXd CDT40 = C40 * (D40.transpose());
+	save_image(CDT40, "CDT40.png");
+	Eigen::MatrixXd CDT80 = C80 * (D80.transpose());
+	save_image(CDT80, "CDT80.png");
 
 	return 0;
 }
