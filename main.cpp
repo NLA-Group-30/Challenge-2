@@ -31,6 +31,8 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
+	std::cout << std::endl;
+	std::cout << " ### Task 1 ### " << std::endl;
 	std::cout << "Image loaded: " << width << "x" << height << " with " << channels << " channels." << std::endl;
 
 	Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> A(height, width);
@@ -45,8 +47,9 @@ int main(int argc, char* argv[]) {
 	stbi_image_free(original_image);
 
 	Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> ATA(A.transpose() * A);
-	std::cout << "Norm of At * A : " << ATA.norm() << std::endl;
+	std::cout << "Norm of At * A : " << ATA.norm() << std::endl << std::endl;
 
+	std::cout << " ### Task 2 ### " << std::endl;
 	// Task 2: Solve the eigenvalue problem ATAx = λx using the proper solver provided by the Eigen library. Report the
 	// two largest computed singular values of A.
 	Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver(ATA);
@@ -62,8 +65,10 @@ int main(int argc, char* argv[]) {
 
 	// We know the singular values are sorted, so we just get the last two elements in the array
 	std::cout << "Two largest singular values of A: " << singularValues(singularValues.size() - 1) << " e "
-			  << singularValues(singularValues.size() - 2) << std::endl;
+			  << singularValues(singularValues.size() - 2) << std::endl
+			  << std::endl;
 
+	std::cout << " ### Task 3 ### " << std::endl;
 	Eigen::saveMarket(ATA, "ATA.mtx");
 
 	/*
@@ -73,13 +78,16 @@ int main(int argc, char* argv[]) {
 		unzip lis-2.1.6.zip
 	 */
 
-	// eigenvalue: 1.045818e+09
+	// eigenvalue: 1.045818e+09 (it is the square of the actual eigenvalue of A)
 	system(
 		"export LIS_ROOT=`realpath .`/lis-2.1.6 && "
 		"mpirun -n 1 ${LIS_ROOT}/test/etest1 ATA.mtx eigvec.txt hist.txt -e pi -emaxiter 100 -etol 1.e-8");
 
+	std::cout << std::endl;
+	std::cout << " ### Task 4 ### " << std::endl;
+
 	// find a shift which leads to an acceleration
-	for (double shift = -1.0; shift <= 1.0; shift += 0.1) {
+	for (double shift = 32338.0; shift <= 32340.0; shift += 0.1) {
 		std::cout << " Shift: " << shift << std::endl;
 		std::string cmd = std::string(
 							  "export LIS_ROOT=`realpath .`/lis-2.1.6 && "
@@ -90,6 +98,8 @@ int main(int argc, char* argv[]) {
 
 	// Task 5: Using the SVD module of the Eigen library, perform a singular value decomposition of the matrix A. Report
 	// the Euclidean norm of the diagonal matrix Σ of the singular values.
+	std::cout << std::endl;
+	std::cout << " ### Task 5 ### " << std::endl;
 
 	return 0;
 }
