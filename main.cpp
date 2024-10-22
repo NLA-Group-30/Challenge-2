@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
 	// Task 2: Solve the eigenvalue problem ATAx = λx using the proper solver provided by the Eigen library. Report the
 	// two largest computed singular values of A.
 	Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver(ATA);
-	if (eigensolver.info() != Eigen ::Success) {
+	if (eigensolver.info() != Eigen::Success) {
 		std::cerr << "Errore nel calcolo degli autovalori." << std::endl;
 		return 1;
 	}
@@ -100,6 +100,10 @@ int main(int argc, char* argv[]) {
 	// the Euclidean norm of the diagonal matrix Σ of the singular values.
 	std::cout << std::endl;
 	std::cout << " ### Task 5 ### " << std::endl;
+
+	Eigen::BDCSVD<Eigen::MatrixXd> svd(A, Eigen::ComputeFullU | Eigen::ComputeFullV);
+	Eigen::MatrixXd sigma = svd.singularValues().asDiagonal();
+	std::cout << "Norm of sigma matrix: " << sigma.norm() << std::endl;
 
 	return 0;
 }
