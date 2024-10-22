@@ -155,5 +155,19 @@ int main(int argc, char* argv[]) {
 	Eigen::MatrixXd CDT80 = C80 * (D80.transpose());
 	save_image(CDT80, "CDT80.png");
 
+	// Task 8: Using Eigen create a black and white checkerboard image (as the one depicted below) with height and width
+	// equal to 200 pixels. Report the Euclidean norm of the matrix corresponding to the image.
+	std::cout << std::endl;
+	std::cout << " ### Task 8 ### " << std::endl;
+	Eigen::MatrixXd chessboard(200, 200);
+	for (int i = 0; i < chessboard.rows(); i++) {
+		for (int j = 0; j < chessboard.cols(); j++) {
+			const int row = (i / 25) % 2;
+			const int col = (j / 25) % 2;
+			chessboard(i, j) = ((row + col) % 2 == 0) ? 0.0 : 255.0;
+		}
+	}
+	std::cout << "Euclidean norm of chessboard matrix: " << chessboard.norm() << std::endl;
+
 	return 0;
 }
