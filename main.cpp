@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
@@ -168,6 +169,21 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	std::cout << "Euclidean norm of chessboard matrix: " << chessboard.norm() << std::endl;
+
+	// Task 9: Introduce a noise into the checkerboard image by adding random fluctuations of color ranging between
+	// [-50, 50] to each pixel. Export the resulting image in .png and upload it.
+	std::cout << std::endl;
+	std::cout << " ### Task 9 ### " << std::endl;
+	std::random_device dev;
+	std::mt19937 rnd{dev()};
+	std::uniform_real_distribution<double> dist{-50.0, 50.0};
+	Eigen::MatrixXd noisy(chessboard.rows(), chessboard.cols());
+	for (int i = 0; i < chessboard.rows(); i++) {
+		for (int j = 0; j < chessboard.cols(); j++) {
+			noisy(i, j) = std::clamp(chessboard(i, j) + dist(rnd), 0.0, 255.0);
+		}
+	}
+	save_image(noisy, "noisy.png");
 
 	return 0;
 }
